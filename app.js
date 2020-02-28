@@ -11,6 +11,14 @@ http
                 }
                 res.end(data)
             })
+        } else if (url === '/post') {
+            fs.readFile('./views/post.html', (err, data) => {
+                if (err) {
+                    return res.end('404')
+                }
+                res.end(data)
+            })
+
         } else if (url.indexOf('/public/') === 0) {
             fs.readFile('.' + url, (err, data) => {
                 if (err) {
