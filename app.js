@@ -1,5 +1,29 @@
 const fs = require('fs')
 const http = require('http')
+const nunjucks = require('nunjucks')
+
+let comments = [
+    {
+        name: '张三',
+        message: '今天天气不错',
+        dateTime: '2015-10-16'
+    },
+    {
+        name: '张三2',
+        message: '今天天气不错',
+        dateTime: '2015-10-16'
+    },
+    {
+        name: '张三3',
+        message: '今天天气不错',
+        dateTime: '2015-10-16'
+    },
+    {
+        name: '张三4',
+        message: '今天天气不错',
+        dateTime: '2015-10-16'
+    }
+]
 
 http
     .createServer((req, res) => {
@@ -9,6 +33,7 @@ http
                 if (err) {
                     return res.end('404')
                 }
+                data = nunjucks.renderString(data.toString(), { comments })
                 res.end(data)
             })
         } else if (url === '/post') {
