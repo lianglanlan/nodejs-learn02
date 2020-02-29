@@ -54,7 +54,17 @@ http
                 res.end(data)
             })
         } else if (pathname === '/pinglun') {
-            res.end(JSON.stringify(parseObj.query))
+            const comment = parseObj.query
+            comment.dateTime = '2017-11-2 11:11:11'
+            comments.push(comment)
+            //服务器重定向至首页
+            // 如何通过服务器让客户端重定向
+            // 1、状态码设置为302临时重定向
+            // 2、在响应头中通过Location高速客户端往哪儿重定向
+            // 如果客户端发现收到服务器的响应状态码是302就会自动去响应头中找Location
+            res.statusCode = 302
+            res.setHeader('Location', '/')
+            res.end()
         } else {    //未访问到添加404
             fs.readFile('./views/404.html', (err, data) => {
                 if (err) {
