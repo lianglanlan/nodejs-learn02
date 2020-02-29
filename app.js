@@ -1,5 +1,6 @@
 const fs = require('fs')
 const http = require('http')
+const url = require('url')
 const nunjucks = require('nunjucks')
 
 let comments = [
@@ -27,8 +28,9 @@ let comments = [
 
 http
     .createServer((req, res) => {
-        const url = req.url
-        if (url === '/') {
+        const parseObj = url.parse(req.url, true)
+        const pathname = parseObj.pathname  //不包括url中?及后边内容
+        if (pathname === '/') {
             fs.readFile('./views/index.html', (err, data) => {
                 if (err) {
                     return res.end('404')
@@ -36,7 +38,7 @@ http
                 data = nunjucks.renderString(data.toString(), { comments })
                 res.end(data)
             })
-        } else if (url === '/post') {
+        } else if (pathname === '/post') {
             fs.readFile('./views/post.html', (err, data) => {
                 if (err) {
                     return res.end('404')
@@ -44,13 +46,15 @@ http
                 res.end(data)
             })
 
-        } else if (url.indexOf('/public/') === 0) {
-            fs.readFile('.' + url, (err, data) => {
+        } else if (pathname.indexOf('/public/') === 0) {
+            fs.readFile('.' + pathname, (err, data) => {
                 if (err) {
-                    return console.log(`静态资源${url}未找到`)
+                    return console.log(`静态资源${pathname}未找到`)
                 }
                 res.end(data)
             })
+        } else if (pathname === '/pinglun') {
+            res.end(JSON.stringify(parseObj.query))
         } else {    //未访问到添加404
             fs.readFile('./views/404.html', (err, data) => {
                 if (err) {
